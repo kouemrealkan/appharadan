@@ -8,4 +8,6 @@ class Services {
       '/banners/search?direction=DESC&page=0&size=5&sort=createdDate&status=ACTIVE&type=SLIDER';
   static String ekuri_slider_url = base_url +
       '/banners/search?direction=DESC&page=0&size=5&sort=createdDate&status=ACTIVE&type=CORPORATE_ADVERT';
+
+  static String kategori_url = base_url+"/categories/mainpage";
 }

@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:haradanapp/Client/services.dart';
 import 'package:haradanapp/Model/Haradan/CorporateAdvertModel.dart';
+import 'package:haradanapp/Model/Haradan/MainPageCategoryModel.dart';
 import 'package:haradanapp/Model/Haradan/SliderWidgetModel.dart';
 import 'package:http/http.dart' as http;
 import 'package:haradanapp/Model/Haradan/WindowAdvertsModel.dart';
@@ -84,6 +86,29 @@ class ApiManager{
       print(e);
     }
     return corporateSliders;
+  }
+
+
+  Future<MainPageCategory> getCategories() async {
+    var client = http.Client();
+    var categories;
+    try {
+      var response = await client.get(Uri.parse(Services.kategori_url));
+      String bodyResponse = utf8.decode(response.bodyBytes);
+      print(response.statusCode);
+      print("kategori body" +response.body);
+      if (response.statusCode == 200) {
+        var jsonString = bodyResponse;
+     //   var jsonMap = json.decode(jsonString);
+       List<dynamic> list = json.decode(jsonString);
+        print("jsonmap :"+list.toString());
+        categories = MainPageCategory.fromJson(list[0]);
+        print("kategori data "+categories.toString());
+      }
+    } catch (Exception, e) {
+      print(e);
+    }
+    return categories;
   }
 
 

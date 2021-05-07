@@ -8,6 +8,7 @@ import 'package:haradanapp/Library/carousel_pro/src/carousel_pro.dart';
 import 'package:haradanapp/Library/countdown_timer/countDownTimer.dart';
 import 'package:haradanapp/Model/BrandDataList.dart';
 import 'package:haradanapp/Model/Haradan/CorporateAdvertModel.dart';
+import 'package:haradanapp/Model/Haradan/MainPageCategoryModel.dart';
 import 'package:haradanapp/Model/Haradan/SliderWidgetModel.dart';
 import 'package:haradanapp/Model/Haradan/WindowAdvertsModel.dart';
 import 'package:haradanapp/Model/HomeGridItemRecomended.dart';
@@ -34,6 +35,7 @@ class _MenuState extends State<Menu> with TickerProviderStateMixin {
   Future<SliderModel> _sliderModels;
   Future<WindowAdverts> _lastAdverts;
   Future<EkuriModel> _corporateAdverts;
+  Future<MainPageCategory> _mainPageCategories;
   @override
   void initState() {
     // TODO: implement initState
@@ -41,6 +43,7 @@ class _MenuState extends State<Menu> with TickerProviderStateMixin {
     _sliderModels = ApiManager().getSliders();
     _lastAdverts = ApiManager().getLastAdverts();
     _corporateAdverts = ApiManager().getCorporateAdvertSliders();
+    _mainPageCategories = ApiManager().getCategories();
     super.initState();
   }
 
@@ -278,7 +281,8 @@ class _MenuState extends State<Menu> with TickerProviderStateMixin {
                             padding: EdgeInsets.only(left: 20.0),
                             child: InkWell(
                                 onTap: onClickWeekPromotion,
-                                child: Image.network(Services.base_url+"/ekuri-ilani"+
+                                child: Image.network(Services.base_url +
+                                    "/ekuri-ilani" +
                                     snapshot.data.data[index].media)),
                           );
                         });
@@ -376,7 +380,7 @@ class _MenuState extends State<Menu> with TickerProviderStateMixin {
 
     /// FlashSale component
     var FlashSell = Container(
-      height: 290.0,
+      height: 220.0,
       color: Colors.white,
 
       /// To set FlashSale Scrolling horizontal
@@ -544,7 +548,7 @@ class _MenuState extends State<Menu> with TickerProviderStateMixin {
                           horizontal: 10.0, vertical: 20.0),
                       crossAxisSpacing: 10.0,
                       mainAxisSpacing: 17.0,
-                      childAspectRatio: 0.545,
+                      childAspectRatio: 0.78,
                       crossAxisCount: 2,
                       primary: false,
                       children: List.generate(
@@ -655,19 +659,18 @@ class ItemGrid extends StatelessWidget {
 //           offset: Offset(4.0, 10.0)
               )
             ]),
-        child: Wrap(
+        child:  Wrap(
           children: <Widget>[
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
-              mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 /// Set Animation image to detailProduk layout
                 Hero(
                   tag: "hero-grid-${windowAdvert.identifier}",
                   child: Material(
                     child: InkWell(
-                      onTap: () {
+                    /*  onTap: () {
                         Navigator.of(context).push(PageRouteBuilder(
                             opaque: false,
                             pageBuilder: (BuildContext context, _, __) {
@@ -693,7 +696,7 @@ class ItemGrid extends StatelessWidget {
                               );
                             },
                             transitionDuration: Duration(milliseconds: 500)));
-                      },
+                      },  */
                       child: Container(
                         height: 146.5, //mediaQueryData.size.height / 3.3,
                         width: 185.0,
@@ -712,49 +715,53 @@ class ItemGrid extends StatelessWidget {
                   ),
                 ),
                 Padding(padding: EdgeInsets.only(top: 7.0)),
+                Padding(padding: EdgeInsets.only(top: 1.0)),
+
                 Padding(
-                  padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                  child: Text(
-                    windowAdvert.city,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                        letterSpacing: 0.5,
-                        color: Colors.black54,
-                        fontFamily: "Sans",
-                        fontWeight: FontWeight.w500,
-                        fontSize: 13.0),
+                  padding:
+                      const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
+
+
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                          Text(
+                            windowAdvert.city,
+                            style: TextStyle(
+                                fontFamily: "Sans",
+                                color: Colors.blueAccent,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 12.0),
+                          ),
+
+                      Text(
+                        windowAdvert.price.toString(),
+                        style: TextStyle(
+                            fontFamily: "Sans",
+                            color: Colors.blueAccent,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 12.0),
+                      )
+
+
+                    ],
                   ),
                 ),
-                Padding(padding: EdgeInsets.only(top: 1.0)),
+
                 Padding(
-                  padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                  padding: const EdgeInsets.only(left: 15.0, right: 15.0,top: 10.0),
                   child: Text(
                     windowAdvert.title.toString(),
                     style: TextStyle(
                         fontFamily: "Sans",
                         fontWeight: FontWeight.w500,
+                        color: Colors.black,
                         fontSize: 14.0),
                     maxLines: 2,
                   ),
                 ),
-                Padding(
-                  padding:
-                      const EdgeInsets.only(left: 15.0, right: 15.0, top: 5.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(
-                        windowAdvert.price.toString(),
-                        style: TextStyle(
-                            fontFamily: "Sans",
-                            color: Colors.black26,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 12.0),
-                      )
-                    ],
-                  ),
-                ),
+
               ],
             ),
           ],
@@ -792,16 +799,27 @@ class LastAdvertItem extends StatelessWidget {
                     transitionDuration: Duration(milliseconds: 850)));
               },
               child: Container(
-                height: 270.0,
-                width: 145.0,
-                color: Colors.white,
+
+                height: 220.0,
+                width: 175.0,
+                decoration: BoxDecoration(
+                   color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color(0xFF656565).withOpacity(0.15),
+                        blurRadius: 4.0,
+                        spreadRadius: 1.0,
+//           offset: Offset(4.0, 10.0)
+                      )
+                    ]),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     SizedBox(
-                      height: 140.0,
-                      width: 145.0,
+                    //  height: 140.0,
+                      width: 175.0,
                       child: Image.network(Services.base_url +
                           (lastAdverts.imageUrl == null
                               ? '/img/default-ad.png'
@@ -809,7 +827,7 @@ class LastAdvertItem extends StatelessWidget {
                     ),
                     Padding(
                       padding:
-                          EdgeInsets.only(left: 8.0, right: 8.0, top: 15.0),
+                          EdgeInsets.only(left: 8.0, right: 8.0, top: 12.0),
                       child: Text(lastAdverts.title,
                           style: TextStyle(
                               fontSize: 10.5,
@@ -826,7 +844,7 @@ class LastAdvertItem extends StatelessWidget {
                               fontWeight: FontWeight.w800,
                               fontFamily: "Sans")),
                     ),
-                    Padding(
+               /*    Padding(
                       padding: const EdgeInsets.only(
                           left: 10.0, top: 5.0, right: 10.0),
                     ),
@@ -845,7 +863,7 @@ class LastAdvertItem extends StatelessWidget {
                                 BorderRadius.all(Radius.circular(4.0)),
                             shape: BoxShape.rectangle),
                       ),
-                    )
+                    ) */
                   ],
                 ),
               ),
@@ -906,19 +924,20 @@ class CategoryIconValue extends StatelessWidget {
   String icon1, icon2, icon3, icon4, title1, title2, title3, title4;
   GestureTapCallback tap1, tap2, tap3, tap4;
 
-  CategoryIconValue(
-      {this.icon1,
-      this.tap1,
-      this.icon2,
-      this.tap2,
-      this.icon3,
-      this.tap3,
-      this.icon4,
-      this.tap4,
-      this.title1,
-      this.title2,
-      this.title3,
-      this.title4});
+  CategoryIconValue({
+    this.icon1,
+    this.tap1,
+    this.icon2,
+    this.tap2,
+    this.icon3,
+    this.tap3,
+    this.icon4,
+    this.tap4,
+    this.title1,
+    this.title2,
+    this.title3,
+    this.title4,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -947,14 +966,14 @@ class CategoryIconValue extends StatelessWidget {
           ),
         ),
         InkWell(
-          onTap: tap2,
+          onTap: tap1,
           child: Column(
             children: <Widget>[
               Image.asset(
                 icon2,
-                height: 26.2,
+                height: 19.2,
               ),
-              Padding(padding: EdgeInsets.only(top: 0.0)),
+              Padding(padding: EdgeInsets.only(top: 7.0)),
               Text(
                 title2,
                 style: TextStyle(
@@ -967,16 +986,16 @@ class CategoryIconValue extends StatelessWidget {
           ),
         ),
         InkWell(
-          onTap: tap3,
+          onTap: tap1,
           child: Column(
             children: <Widget>[
               Image.asset(
-                icon3,
-                height: 22.2,
+                icon1,
+                height: 19.2,
               ),
-              Padding(padding: EdgeInsets.only(top: 4.0)),
+              Padding(padding: EdgeInsets.only(top: 7.0)),
               Text(
-                title3,
+                title1,
                 style: TextStyle(
                   fontFamily: "Sans",
                   fontSize: 10.0,
@@ -987,7 +1006,7 @@ class CategoryIconValue extends StatelessWidget {
           ),
         ),
         InkWell(
-          onTap: tap4,
+          onTap: tap1,
           child: Column(
             children: <Widget>[
               Image.asset(
